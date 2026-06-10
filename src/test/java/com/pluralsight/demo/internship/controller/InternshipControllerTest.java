@@ -101,4 +101,26 @@ class InternshipControllerTest {
         // Verify service was called
         verify(internshipService, times(1)).deleteInternship(id);
     }
+    @Test
+    void getInternshipById_shouldReturnTheInternship() throws Exception {
+        Long id = 2L;
+
+        Internship internship = new Internship("Data Analyst", "Data Inc",
+                "Analyze data", "Rotterdam");
+        internship.setId(id);
+        internship.setPublished(true);
+
+
+        // Tell mock service what to return
+        when(internshipService.getInternshipById(id)).thenReturn(internship);
+
+        // ACT & ASSERT: Make request and verify response
+        mockMvc.perform(get("/api/internships/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())  // 200 OK
+                .andExpect(jsonPath("$.title").value("Data Analyst"))
+                .andExpect(jsonPath("$.company").value("Data Inc"))
+                .andExpect(jsonPath("$.location").value("Rotterdam"))
+                .andExpect(jsonPath("$.published").value(true));
+    }
 }
