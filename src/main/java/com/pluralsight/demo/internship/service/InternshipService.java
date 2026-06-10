@@ -5,6 +5,7 @@ import com.pluralsight.demo.internship.repository.InternshipRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,12 @@ public class InternshipService {
                 .filter(i -> i.isPublished())
                 .collect(Collectors.toList());
     }
-
+    public List<Internship> getInternshipsByLocation(String
+                                                             location) {
+        return internshipRepository.findAll().stream()
+                .filter(i -> i.getLocation().equalsIgnoreCase(location))
+                .collect(Collectors.toList());
+    }
     public Internship getInternshipById(Long id) {
         // Intentional flaw: throws RuntimeException instead of proper exception
         return internshipRepository.findById(id)
@@ -38,6 +44,7 @@ public class InternshipService {
         if (autoPublish) {
             internship.setPublished(true);
         }
+        internship.setCreatedAt(LocalDateTime.now());
         return internshipRepository.save(internship);
     }
 

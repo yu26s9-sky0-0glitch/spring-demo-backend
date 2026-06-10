@@ -20,8 +20,14 @@ public class CandidateController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Candidate>> getAllCandidates() {
-        List<Candidate> candidates = candidateService.getAllCandidates();
+    public ResponseEntity<List<Candidate>> getAllCandidates(@RequestParam(required = false) String fieldOfStudy) {
+        List<Candidate> candidates;
+        if(fieldOfStudy!=null){
+            candidates= candidateService.getCandidateByFieldOfStudy(fieldOfStudy);
+        }
+        else {
+            candidates = candidateService.getAllCandidates();
+        }
         return ResponseEntity.ok(candidates);
     }
 
@@ -30,6 +36,17 @@ public class CandidateController {
         Candidate candidate = candidateService.getCandidateById(id);
         return ResponseEntity.ok(candidate);
     }
+    @GetMapping("/search/name/{name}")
+    public ResponseEntity<List<Candidate>> getCandidateByName(@PathVariable String name) {
+        List<Candidate> candidate = candidateService.getCandidateByName(name);
+        return ResponseEntity.ok(candidate);
+    }
+    @GetMapping("/search/email/{email}")
+    public ResponseEntity<Candidate> getCandidateByEmail(@PathVariable String email) {
+        Candidate candidate = candidateService.getCandidateByEmail(email);
+        return ResponseEntity.ok(candidate);
+    }
+
 
     @PostMapping
     public ResponseEntity<Candidate> createCandidate(@RequestBody Candidate candidate) {
